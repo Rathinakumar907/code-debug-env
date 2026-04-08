@@ -1,0 +1,11 @@
+name: code-debug-env
+version: "1.0"
+description: "RL environment where an agent fixes broken Python code to pass test cases"
+entrypoint: server.main:app
+port: 7860
+endpoints:
+  reset: POST /reset
+  step: POST /step/{session_id}
+  state: GET /state/{session_id}
+  health: GET /health
+  
