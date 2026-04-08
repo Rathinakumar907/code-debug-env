@@ -1,11 +1,8 @@
-"""
-server/main.py — OpenEnv HTTP server entrypoint
-"""
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 from .env import CodeDebugEnv, DebugAction
+import uuid
 
 app = FastAPI(title="Code Debug RL Environment")
 env = CodeDebugEnv()
@@ -23,7 +20,6 @@ def health():
 
 @app.post("/reset")
 def reset(bug_id: Optional[str] = None):
-    import uuid
     sid = str(uuid.uuid4())
     obs = env.reset(session_id=sid, bug_id=bug_id)
     return {"session_id": sid, "observation": obs.model_dump()}
@@ -40,3 +36,13 @@ def step(session_id: str, request: StepRequest):
 @app.get("/state/{session_id}")
 def state(session_id: str):
     return env.state(session_id=session_id).model_dump()
+
+
+def main():
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
+
+if __name__ == "__main__":
+    main()
+    
